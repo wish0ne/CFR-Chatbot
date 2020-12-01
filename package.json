@@ -1,0 +1,21 @@
+{
+  "name": "oss-cfr",
+  "version": "1.0.0",
+  "description": "oss-cfr",
+  "main": "cfr_test.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://khuhub.khu.ac.kr/2018102237/cfr-chatbot.git"
+  },
+  "author": "daeun",
+  "license": "ISC"
+}
