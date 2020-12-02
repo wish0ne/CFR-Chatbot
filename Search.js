@@ -13,9 +13,81 @@ var address='';
 var roadAddress='';
 
 //받아와야할 데이터
-var place = '성수역'; //사용자 위치
-var gender = 'female'; //사용자 성별
-var emotion = 'talking'; //사용자 감정
+var chatbotaddress={ //chatbot의 위치 데이터 (json)
+  "type":"location",
+  "id":13100,
+  "title":"성수역",
+  "address":"성동구 아차산로"
+}; 
+
+var cfrdata={
+  "info": {
+    "size": {
+      "width": 900,
+      "height": 1349
+    },
+    "faceCount": 1
+  },
+  "faces": [{
+    "roi": {
+      "x": 235,
+      "y": 227,
+      "width": 326,
+      "height": 326
+    },
+    "landmark": {
+      "leftEye": {
+        "x": 311,
+        "y": 289
+      },
+      "rightEye": {
+        "x": 425,
+        "y": 287
+      },
+      "nose": {
+        "x": 308,
+        "y": 346
+      },
+      "leftMouth": {
+        "x": 306,
+        "y": 425
+      },
+      "rightMouth": {
+        "x": 383,
+        "y": 429
+      }
+    },
+    "gender": {
+      "value": "male",
+      "confidence": 0.91465
+    },
+    "age": {
+      "value": "22~26",
+      "confidence": 0.742265
+    },
+    "emotion": {
+      "value": "smile",
+      "confidence": 0.460465
+    },
+    "pose": {
+      "value": "frontal_face",
+      "confidence": 0.937789
+    }
+  }]
+ }
+
+var cfrgender=cfrdata.faces[0].gender.value; //CFR의 성별 데이터 (json)
+var cfremotion=cfrdata.faces[0].emotion.value; //CFR의 감정 데이터 (json)
+
+//위치 데이터에서 필요한 부분만 자르기
+var chatbotdata1=chatbotaddress.address; 
+var chatbotdata2=chatbotdata1.split(' ');
+var chatbotAddress=chatbotdata2[0];
+
+
+var place = chatbotAddress; //사용자 위치
+var gender = cfrgender; //사용자 성별
+var emotion = cfremotion; //사용자 감정
 var menu='';
 
 if(gender=='male'){
