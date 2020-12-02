@@ -3,7 +3,8 @@
 얼굴인식 API를 이용하여 사용자의 감정, 성별에 적합한 맛집을 추천해주는 챗봇 서비스입니다. 
 
 ## How to use chatbot
-
+<img src="image/LINE_APP.png" width="20%" height="20%"alt="line"></img>
+<img src="image/QR_code.png" width="20%" height="20%"alt="line"></img>
 
 1. QR 코드를 이용하여 Line에서 챗봇을 추가해주세요.
 2.  CFR을 이용한 얼굴인식 기반으로 추천맛집을 제공받을지 선택해주세요
