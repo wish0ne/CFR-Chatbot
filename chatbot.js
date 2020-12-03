@@ -1,4 +1,5 @@
 var express = require('express');
+var cfr = require('./cfr_module.js');
 const request = require('request');
 const TARGET_URL = 'https://api.line.me/v2/bot/message/reply'
 const TOKEN = 'w5i8sURqF5bof6DWeB87n+oCeWrYaFf7a5YZzfzN1jeITIlZ3PcOmZRcdGCo/djTuHhNxybfJ69y7Jex+7tipBNRynngfyWX9CK1L3EupuhnX8rubeCmJda7HvsQWXVo8ZDcwl2aLwXsE3kiYF2qEwdB04t89/1O/w1cDnyilFU='
@@ -60,7 +61,7 @@ app.post('/hook', function (req, res) {
         downloadContent(content_id, downloadPath);
         
         //사진으로 얼굴 인식해주는 함수
-
+        cfr.imgtodata('./test2.jpg');
         SendingLocation(eventObj.replyToken);
         res.sendStatus(200);
     } else { 
