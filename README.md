@@ -26,7 +26,8 @@
 5. 사용자 감정과 성별, 위치를 기반으로 한 맛집이 제공됩니다. 🥘
 
 <br>
-한눈에 살펴보는 챗봇 사용법
+<h4 align="center">📜한눈에 살펴보는 챗봇 사용법📜</h4>
+<p align="center"><img src="image/chatbot_algorithm.png"></img></p>
 
 ## How to develop
 
