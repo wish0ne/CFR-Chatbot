@@ -1,5 +1,6 @@
 var express = require('express');
-var cfr = require('./cfr_module.js');
+var client_id = 'v3M4wjolGLkrvNA3GUIW';
+var client_secret = 'fKF6vjkWhE';
 const request = require('request');
 const TARGET_URL = 'https://api.line.me/v2/bot/message/reply'
 const TOKEN = 'w5i8sURqF5bof6DWeB87n+oCeWrYaFf7a5YZzfzN1jeITIlZ3PcOmZRcdGCo/djTuHhNxybfJ69y7Jex+7tipBNRynngfyWX9CK1L3EupuhnX8rubeCmJda7HvsQWXVo8ZDcwl2aLwXsE3kiYF2qEwdB04t89/1O/w1cDnyilFU='
@@ -18,6 +19,9 @@ app.use(bodyParser.json());
 
 var usingMessage = ''
 var content_id = ''
+var imgDownloaded = false;
+var downloadedImg = ''
+
 app.post('/hook', function (req, res) {
 
     var eventObj = req.body.events[0];
@@ -57,14 +61,19 @@ app.post('/hook', function (req, res) {
         }
     } else if (eventObj.message.type == 'image') {
         content_id = eventObj.message.id;
-        const downloadPath = path.join(__dirname, `${content_id}.jpg`);
+        const downloadPath = path.join(__dirname, 'sample.jpg');
         downloadContent(content_id, downloadPath);
-        
+        //downloadedImg = content_id;
+        //imgDownloaded = true;
+        Checking(eventObj.replyToken);
+        res.sendStatus(200);
+    } else if (text == '계속 진행') {
         //사진으로 얼굴 인식해주는 함수
-        cfr.imgtodata('./test2.jpg');
+        imgtodata('sample.jpg');
         SendingLocation(eventObj.replyToken);
         res.sendStatus(200);
-    } else { 
+    }
+    else { 
         usingMessage = text;
         initReply(eventObj.replyToken);
         res.sendStatus(200);
@@ -258,6 +267,29 @@ function QuickReplyCfrNo (replyToken) {
         });
 }
 
+function Checking (replyToken) {
+    request.post(
+        {
+            url: TARGET_URL,
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`
+            },
+            json: {
+                "replyToken": replyToken,
+                "messages": [
+                    {
+                        "type": "text",
+                        "label": "계속 진행",
+                        "text": "계속 진행하시려면 '계속 진행'을 입력해주세요."
+                    },
+                ],
+            }
+        },(error, response, body) => {
+            console.log(body)
+        });
+}
+
+//추천 결과
 function RecommendationResult(replyToken) {
     request.post(
         {
@@ -300,6 +332,34 @@ function RecommendationResult(replyToken) {
             console.log(body)
         });
 }
+
+imgtodata = function(dir){
+    var api_url = 'https://openapi.naver.com/v1/vision/face'; // 얼굴 감지
+ 
+    var _formData = {
+      image:'image',
+      image: fs.createReadStream(path.join(__dirname, dir)) // FILE 이름
+    };
+ 
+     request.post(
+       { url:api_url, 
+         formData:_formData,
+         headers: {'X-Naver-Client-Id':client_id,
+                  'X-Naver-Client-Secret': client_secret}
+       }, (err,response,body) =>{
+        console.log(response.statusCode); // 200
+        //console.log(response.headers['content-type'])
+ 
+        data=JSON.parse(body);
+        gender=data.faces[0].gender.value;
+        emotion=data.faces[0].emotion.value
+ 
+        console.log(gender);
+        console.log(emotion);
+ 
+        //return {gender:gender,emotion:emotion};
+     });
+   }
 
 //사용자가 보낸 사진 저장
 const config = ({
