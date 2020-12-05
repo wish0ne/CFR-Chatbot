@@ -33,7 +33,9 @@ var link='';
 var category='';
 var address='';
 var roadAddress='';
+var menu='';
 
+var arrmenu=new Array('술','야식','한식','치킨','양식','중식','일식','고기','디저트','카페');
   
 app.post('/hook', function (req, res) {
 
@@ -54,10 +56,10 @@ app.post('/hook', function (req, res) {
         var chatbotaddress=eventObj.message;
         var chatbotdata1=chatbotaddress.address; 
         var chatbotdata2=chatbotdata1.split(' ');
-        var place=chatbotdata2[0];
+        var place=chatbotdata2[3];
         
         console.log(place);
-        var menu='';
+       
         var query= place + ' ' + menu + ' 맛집'; //검색 원하는 문자열 
         RecommendationResult(eventObj.replyToken, query);
 
@@ -72,7 +74,8 @@ app.post('/hook', function (req, res) {
       if (text == '랜덤 추천') {
 
         //랜덤으로 맛집 추천해주는 함수
-        var query = '맛집';
+        var randomMenu=Math.floor(Math.random()*10);
+        var query = randomMenu+' 맛집';
         RecommendationResult(eventObj.replyToken, query);
 
         res.sendStatus(200);
@@ -89,7 +92,7 @@ app.post('/hook', function (req, res) {
         //imgDownloaded = true;
         Checking(eventObj.replyToken);
         res.sendStatus(200);
-    } else if (text == '계속 진행') {
+    } else if (text == 'ㅇ') {
         //사진으로 얼굴 인식해주는 함수
         imgtodata('sample.jpg');
         SendingLocation(eventObj.replyToken);
@@ -303,7 +306,7 @@ function Checking (replyToken) {
                     {
                         "type": "text",
                         "label": "계속 진행",
-                        "text": "계속 진행하시려면 '계속 진행'을 입력해주세요."
+                        "text": "계속 진행하시려면 'ㅇ'을 입력해주세요."
                     },
                 ],
             }
@@ -406,7 +409,7 @@ function RecommendationResult(replyToken, query) {
 
 }
 
-var arrmenu=new Array('술','야식','한식','치킨','양식','중식','일식','고기','디저트','카페');
+
 imgtodata = function(dir) {
     var api_url = 'https://openapi.naver.com/v1/vision/face'; // 얼굴 감지
 
@@ -493,7 +496,8 @@ imgtodata = function(dir) {
                     menu = '';
                 }
             } else {
-                menu = '';
+                randomMenu=Math.floor(Math.random()*10);
+                menu = arrmenu[randomMenu];
             }
 
             console.log(menu);
