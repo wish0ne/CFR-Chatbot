@@ -434,8 +434,8 @@ imgtodata = function(dir) {
         var facenum = cfrdata.info.faceCount;
         //인식된 얼굴이 없을 때
         if (facenum == 0) {
-
-
+            randomMenu=Math.floor(Math.random()*10);
+            menu = arrmenu[randomMenu];
         } 
         //얼굴 1개 이상
         else {
@@ -470,7 +470,8 @@ imgtodata = function(dir) {
                 } else if (emotion == 'talking') {
                     menu = arrmenu[0];
                 } else {
-                    menu = '';
+                    randomMenu=Math.floor(Math.random()*10);
+                    menu = arrmenu[randomMenu];
                 }
             } 
             else if (gender == 'female') {
@@ -493,7 +494,8 @@ imgtodata = function(dir) {
                 } else if (emotion == 'talking') {
                     menu = arrmenu[9];
                 } else {
-                    menu = '';
+                    randomMenu=Math.floor(Math.random()*10);
+                    menu = arrmenu[randomMenu];
                 }
             } else {
                 randomMenu=Math.floor(Math.random()*10);
@@ -517,7 +519,7 @@ function TMtoWGS(x,y){
     var xy = [x, y];
     var result = proj4(from, to, xy);
  
-    return(result);
+    return result;
 }
 
 //사용자가 보낸 사진 저장
