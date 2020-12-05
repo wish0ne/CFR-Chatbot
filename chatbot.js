@@ -501,6 +501,21 @@ imgtodata = function(dir) {
     });
 }
 
+//좌표 변경
+const proj4 = require('proj4');
+function TMtoWGS(x,y){
+    var to = 'WGS84'
+    var from = 'TM128'
+ 
+    proj4.defs('WGS84', "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+    proj4.defs('TM128', '+proj=tmerc +lat_0=38 +lon_0=128 +k=0.9999 +x_0=400000 +y_0=600000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
+ 
+    var xy = [x, y];
+    var result = proj4(from, to, xy);
+ 
+    return(result);
+}
+
 //사용자가 보낸 사진 저장
 const config = ({
     channelAccessToken: `${TOKEN}`,
