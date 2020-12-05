@@ -3,12 +3,12 @@ var client_id = 'v3M4wjolGLkrvNA3GUIW';
 var client_secret = 'fKF6vjkWhE';
 const request = require('request');
 const TARGET_URL = 'https://api.line.me/v2/bot/message/reply'
-const TOKEN = 'hMnfhBQc8nadyn5Ow6aejAVDUoUEp9N8YxOFxfOB2V83TOf0vjquT4cC8ll4Ccq4hkWJ8xHij53FzjMteqLLuUL6bZs+ZONI+f5aawIulRg4Y4FFBGp1O03awvgxGn503iyI7+5iQCEi80Kus6cRZQdB04t89/1O/w1cDnyilFU=' //수정해주세용
-const SECRET = '270103fd4cbd81695ceb6d0ed7f85f4b' //수정해주세용
+const TOKEN = 'w5i8sURqF5bof6DWeB87n+oCeWrYaFf7a5YZzfzN1jeITIlZ3PcOmZRcdGCo/djTuHhNxybfJ69y7Jex+7tipBNRynngfyWX9CK1L3EupuhnX8rubeCmJda7HvsQWXVo8ZDcwl2aLwXsE3kiYF2qEwdB04t89/1O/w1cDnyilFU=' //수정해주세용
+const SECRET = 'b0b4501ebc2813a2b0e586293a35b466' //수정해주세용
 const fs = require('fs');
 const path = require('path');
 const HTTPS = require('https');
-const domain = "www.osschatbot.tk" //수정해주세용
+const domain = "www.osstest237.ml" //수정해주세용
 const sslport = 23023;
 const line = require('@line/bot-sdk');
 
@@ -260,7 +260,7 @@ function QuickReplyCfrYes(replyToken) {
                 "messages": [
                     {
                         "type": "text",
-                        "text": "사진을 입력해주세요.",
+                        "text": "사진을 입력해주세요. 얼굴 인식이 되지 않을 경우 위치 기반으로 추천됩니다.",
                         "quickReply": quickReplyCfrYes
                     }
                 ]
@@ -350,6 +350,12 @@ function RecommendationResult(replyToken, query) {
 
       roadAddress = data.items[0].roadAddress;
       console.log(roadAddress);
+    
+      var x = Number(data.items[0].mapx);
+      var y = Number(data.items[0].mapy);
+        
+      var longitude = TMtoWGS(x, y)[0];
+      var latitude = TMtoWGS(x, y)[1];
 
       request.post(
         {
@@ -360,41 +366,21 @@ function RecommendationResult(replyToken, query) {
           json: {
             "replyToken": replyToken,
             "messages": [
-              /*{
-                "type": "imagemap",
-                // 이미지 불러올 수 없습니다 뜸
-                "baseUrl": "https://www.flaticon.com/free-icon/food-store_2934069?term=restaurant&page=1&position=7&related_item_id=2934069",
-                "altText": "이미지를 누르시면 해당 가게로 이동합니다.",
-                "baseSize": {
-                  "width": 1040,
-                  "height": 1040
+                {
+                    "type":"location",
+                    "title": title,
+                    "address": address,
+                    "latitude": latitude,
+                    "longitude": longitude
                 },
-                "actions": [
-                  {
-                    "type": "uri",
-                    "linkUri": link, // 가게 링크
-                    "area": {
-                      "x": 0,
-                      "y": 0,
-                      "width": 1040,
-                      "height": 1040
-                    }
-                  }
-                ]
-              },*/
-              {
-                "type": "text",
-                "text": "맛집 이름: " + title
-              },
-              {
-                "type":"text",
-                "text": "맛집 주소: " + address
-              }
-              /*{
-                "type":"location",
-                "title":"맛집 주소",
-                "address":address
-              }*/
+                {
+                    "type": "text",
+                    "text": "맛집 이름: " + title
+                },
+                {
+                    "type":"text",
+                    "text": "맛집 주소: " + address
+                }
             ]
           }
         }, (error, response, body) => {
