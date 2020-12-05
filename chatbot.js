@@ -3,12 +3,12 @@ var client_id = 'v3M4wjolGLkrvNA3GUIW';
 var client_secret = 'fKF6vjkWhE';
 const request = require('request');
 const TARGET_URL = 'https://api.line.me/v2/bot/message/reply'
-const TOKEN = 'w5i8sURqF5bof6DWeB87n+oCeWrYaFf7a5YZzfzN1jeITIlZ3PcOmZRcdGCo/djTuHhNxybfJ69y7Jex+7tipBNRynngfyWX9CK1L3EupuhnX8rubeCmJda7HvsQWXVo8ZDcwl2aLwXsE3kiYF2qEwdB04t89/1O/w1cDnyilFU='
-const SECRET = 'b0b4501ebc2813a2b0e586293a35b466'
+const TOKEN = 'hMnfhBQc8nadyn5Ow6aejAVDUoUEp9N8YxOFxfOB2V83TOf0vjquT4cC8ll4Ccq4hkWJ8xHij53FzjMteqLLuUL6bZs+ZONI+f5aawIulRg4Y4FFBGp1O03awvgxGn503iyI7+5iQCEi80Kus6cRZQdB04t89/1O/w1cDnyilFU=' //수정해주세용
+const SECRET = '270103fd4cbd81695ceb6d0ed7f85f4b' //수정해주세용
 const fs = require('fs');
 const path = require('path');
 const HTTPS = require('https');
-const domain = "www.osstest237.ml"
+const domain = "www.osschatbot.tk" //수정해주세용
 const sslport = 23023;
 const line = require('@line/bot-sdk');
 
@@ -22,6 +22,19 @@ var content_id = ''
 var imgDownloaded = false;
 var downloadedImg = ''
 
+//search
+var search_client_id = 'cnS9zzj0OZ3xPgHqtaLJ';
+var search_client_secret = 'oQGaxdr7aq';
+
+//data parsing
+var data='';
+var title='';
+var link='';
+var category='';
+var address='';
+var roadAddress='';
+
+  
 app.post('/hook', function (req, res) {
 
     var eventObj = req.body.events[0];
@@ -38,8 +51,16 @@ app.post('/hook', function (req, res) {
     if (eventObj.message.type == 'location') {
         
         //위치 받아서 맛집 추천해주는 함수
+        var chatbotaddress=eventObj.message;
+        var chatbotdata1=chatbotaddress.address; 
+        var chatbotdata2=chatbotdata1.split(' ');
+        var place=chatbotdata2[0];
+        
+        console.log(place);
+        var menu='';
+        var query= place + ' ' + menu + ' 맛집'; //검색 원하는 문자열 
+        RecommendationResult(eventObj.replyToken, query);
 
-        RecommendationResult(eventObj.replyToken);
         res.sendStatus(200);
     } else if (text == 'Cfr:Yes') {
         QuickReplyCfrYes(eventObj.replyToken);
@@ -48,13 +69,14 @@ app.post('/hook', function (req, res) {
         QuickReplyCfrNo(eventObj.replyToken);
         res.sendStatus(200);
     } else if (text == '랜덤 추천' || text == '위치 기반 추천') {
-        if (text == '랜덤 추천') {
+      if (text == '랜덤 추천') {
 
-            //랜덤으로 맛집 추천해주는 함수
+        //랜덤으로 맛집 추천해주는 함수
+        var query = '맛집';
+        RecommendationResult(eventObj.replyToken, query);
 
-            RecommendationResult(eventObj.replyToken);
-            res.sendStatus(200);
-        }
+        res.sendStatus(200);
+      }
         else { 
             SendingLocation(eventObj.replyToken);
             res.sendStatus(200);
@@ -169,7 +191,7 @@ function initReply (replyToken) {
                     },
                     {
                         "type": "text",
-                        "text": "안녕하세요.\nCFR을 이용한 경기도 맛집 추천봇입니다."
+                        "text": "안녕하세요.\nCFR을 이용한 얼굴인식 맛집 추천봇입니다."
                     },
                     {
                         "type": "template",
@@ -215,7 +237,8 @@ function SendingLocation(replyToken) {
                         "quickReply": quickReplyLocation
                     }
                 ]
-            }
+            },
+            body: request
         },(error, response, body) => {
             console.log(body)
     });
@@ -289,48 +312,98 @@ function Checking (replyToken) {
         });
 }
 
-//추천 결과
-function RecommendationResult(replyToken) {
-    request.post(
+
+//추천 결과 + Search
+function RecommendationResult(replyToken, query) {
+  
+  console.log(query);
+  var display = '1'; //검색 결과 출력 건수. 최대 5개
+  var start = '1'; //검색 시작 위치. 1만 가능
+  var sort = 'comment'; //정렬 옵션 (random : 유사도순, comment : 카페/블로그 리뷰 개수 순)
+
+  var api_url = 'https://openapi.naver.com/v1/search/local?query=' + encodeURI(query) + '&display=' + encodeURI(display) + '&start=' + encodeURI(start) + '&sort=' + encodeURI(sort);
+  var options = {
+    url: api_url,
+    headers: { 'X-Naver-Client-Id': search_client_id, 'X-Naver-Client-Secret': search_client_secret }
+  };
+  request.get(options, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      //response.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
+      console.log(body);
+      
+      //데이터 parsing
+      data = JSON.parse(body);
+      title = data.items[0].title;
+      console.log(title);
+
+      link = data.items[0].link;
+      console.log(link);
+
+      category = data.items[0].category;
+      console.log(category);
+
+      address = data.items[0].address;
+      console.log(address);
+
+      roadAddress = data.items[0].roadAddress;
+      console.log(roadAddress);
+
+      request.post(
         {
-            url: TARGET_URL,
-            headers: {
-                'Authorization': `Bearer ${TOKEN}`
-            },
-            json: {
-                "replyToken": replyToken,
-                "messages": [
-                    {
-                        "type": "imagemap",
-                        // 이미지 불러올 수 없습니다 뜸
-                        "baseUrl": "https://www.flaticon.com/free-icon/food-store_2934069?term=restaurant&page=1&position=7&related_item_id=2934069",
-                        "altText": "이미지를 누르시면 해당 가게로 이동합니다.",
-                        "baseSize": {
-                            "width": 1040,
-                            "height": 1040
-                        },
-                        "actions": [
-                            {
-                                "type": "uri",
-                                "linkUri": `${link}`, // 가게 링크
-                                "area": {
-                                    "x":0,
-                                    "y":0,
-                                    "width":1040,
-                                    "height":1040
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "text": "기타 결과 출력" // 정보 수정
+          url: TARGET_URL,
+          headers: {
+            'Authorization': `Bearer ${TOKEN}`
+          },
+          json: {
+            "replyToken": replyToken,
+            "messages": [
+              /*{
+                "type": "imagemap",
+                // 이미지 불러올 수 없습니다 뜸
+                "baseUrl": "https://www.flaticon.com/free-icon/food-store_2934069?term=restaurant&page=1&position=7&related_item_id=2934069",
+                "altText": "이미지를 누르시면 해당 가게로 이동합니다.",
+                "baseSize": {
+                  "width": 1040,
+                  "height": 1040
+                },
+                "actions": [
+                  {
+                    "type": "uri",
+                    "linkUri": link, // 가게 링크
+                    "area": {
+                      "x": 0,
+                      "y": 0,
+                      "width": 1040,
+                      "height": 1040
                     }
+                  }
                 ]
-            }
-        },(error, response, body) => {
-            console.log(body)
+              },*/
+              {
+                "type": "text",
+                "text": "맛집 이름: " + title
+              },
+              {
+                "type":"text",
+                "text": "맛집 주소: " + address
+              }
+              /*{
+                "type":"location",
+                "title":"맛집 주소",
+                "address":address
+              }*/
+            ]
+          }
+        }, (error, response, body) => {
+          console.log(body)
         });
+
+    } else {
+      res.status(response.statusCode).end();
+      console.log('error = ' + response.statusCode);
+    }
+  })
+
 }
 
 imgtodata = function(dir){
@@ -349,13 +422,89 @@ imgtodata = function(dir){
        }, (err,response,body) =>{
         console.log(response.statusCode); // 200
         //console.log(response.headers['content-type'])
- 
-        data=JSON.parse(body);
-        gender=data.faces[0].gender.value;
-        emotion=data.faces[0].emotion.value
+        console.log(body);
+        var cfrdata=JSON.parse(body);
+
+        var cfrgender=cfrdata.faces[0].gender.value; //CFR의 성별 데이터 (json)
+        var cfremotion=cfrdata.faces[0].emotion.value; //CFR의 감정 데이터 (json)
+        
+        var gender = cfrgender; //사용자 성별
+        var emotion = cfremotion; //사용자 감정
+
  
         console.log(gender);
         console.log(emotion);
+
+        if(gender=='male'){
+          if(emotion=='angry'){
+            menu='술';
+          }
+          else if(emotion=='disgust'){
+            menu='야식';
+          }
+          else if(emotion=='fear'){
+            menu='한식';
+          }
+          else if(emotion=='laugh'){
+            menu='치킨';
+          }
+          else if(emotion=='neutral'){
+            menu='양식';
+          }
+          else if(emotion=='sad'){
+            menu='중식';
+          }
+          else if(emotion=='surprise'){
+            menu='일식';
+          }
+          else if(emotion=='smile'){
+            menu='고기';
+          }
+          else if(emotion=='talking'){
+            menu='술';
+          }
+          else{
+            menu='';
+          }
+        }
+        else if(gender=='female'){
+          if(emotion=='angry'){
+            menu='고기';
+          }
+          else if(emotion=='disgust'){
+            menu='디저트';
+          }
+          else if(emotion=='fear'){
+            menu='한식';
+          }
+          else if(emotion=='laugh'){
+            menu='일식';
+          }
+          else if(emotion=='neutral'){
+            menu='중식';
+          }
+          else if(emotion=='sad'){
+            menu='야식';
+          }
+          else if(emotion=='surprise'){
+            menu='중식';
+          }
+          else if(emotion=='smile'){
+            menu='치킨';
+          }
+          else if(emotion=='talking'){
+            menu='카페';
+          }
+          else{
+            menu='';
+          }
+        }
+        else{
+          menu='';
+        }
+        
+        console.log(menu);
+      
  
         //return {gender:gender,emotion:emotion};
      });
