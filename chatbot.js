@@ -406,109 +406,100 @@ function RecommendationResult(replyToken, query) {
 
 }
 
-imgtodata = function(dir){
+var arrmenu=new Array('술','야식','한식','치킨','양식','중식','일식','고기','디저트','카페');
+imgtodata = function(dir) {
     var api_url = 'https://openapi.naver.com/v1/vision/face'; // 얼굴 감지
- 
+
     var _formData = {
-      image:'image',
-      image: fs.createReadStream(path.join(__dirname, dir)) // FILE 이름
+        image: 'image',
+        image: fs.createReadStream(path.join(__dirname, dir)) // FILE 이름
     };
- 
-     request.post(
-       { url:api_url, 
-         formData:_formData,
-         headers: {'X-Naver-Client-Id':client_id,
-                  'X-Naver-Client-Secret': client_secret}
-       }, (err,response,body) =>{
+
+    request.post({
+        url: api_url,
+        formData: _formData,
+        headers: {
+            'X-Naver-Client-Id': client_id,
+            'X-Naver-Client-Secret': client_secret
+        }
+    }, (err, response, body) => {
         console.log(response.statusCode); // 200
         //console.log(response.headers['content-type'])
         console.log(body);
-        var cfrdata=JSON.parse(body);
+        var cfrdata = JSON.parse(body);
 
-        var cfrgender=cfrdata.faces[0].gender.value; //CFR의 성별 데이터 (json)
-        var cfremotion=cfrdata.faces[0].emotion.value; //CFR의 감정 데이터 (json)
-        
-        var gender = cfrgender; //사용자 성별
-        var emotion = cfremotion; //사용자 감정
+        var facenum = cfrdata.info.faceCount;
+        //인식된 얼굴이 없을 때
+        if (facenum == 0) {
 
- 
-        console.log(gender);
-        console.log(emotion);
 
-        if(gender=='male'){
-          if(emotion=='angry'){
-            menu='술';
-          }
-          else if(emotion=='disgust'){
-            menu='야식';
-          }
-          else if(emotion=='fear'){
-            menu='한식';
-          }
-          else if(emotion=='laugh'){
-            menu='치킨';
-          }
-          else if(emotion=='neutral'){
-            menu='양식';
-          }
-          else if(emotion=='sad'){
-            menu='중식';
-          }
-          else if(emotion=='surprise'){
-            menu='일식';
-          }
-          else if(emotion=='smile'){
-            menu='고기';
-          }
-          else if(emotion=='talking'){
-            menu='술';
-          }
-          else{
-            menu='';
-          }
+        } 
+        //얼굴 1개 이상
+        else {
+            //제일 잘 인식되는 얼굴 기준
+            var cfrgender = cfrdata.faces[0].gender.value; //CFR의 성별 데이터 (json)
+            var cfremotion = cfrdata.faces[0].emotion.value; //CFR의 감정 데이터 (json)
+
+            var gender = cfrgender; //사용자 성별
+            var emotion = cfremotion; //사용자 감정
+
+            console.log(facenum);
+            console.log(gender);
+            console.log(emotion);
+
+            if (gender == 'male') {
+                if (emotion == 'angry') {
+                    menu = arrmenu[0];
+                } else if (emotion == 'disgust') {
+                    menu = arrmenu[1];
+                } else if (emotion == 'fear') {
+                    menu = arrmenu[2];
+                } else if (emotion == 'laugh') {
+                    menu = arrmenu[3];
+                } else if (emotion == 'neutral') {
+                    menu = arrmenu[4];
+                } else if (emotion == 'sad') {
+                    menu = arrmenu[5];
+                } else if (emotion == 'surprise') {
+                    menu = arrmenu[6];
+                } else if (emotion == 'smile') {
+                    menu = arrmenu[7];
+                } else if (emotion == 'talking') {
+                    menu = arrmenu[0];
+                } else {
+                    menu = '';
+                }
+            } 
+            else if (gender == 'female') {
+                if (emotion == 'angry') {
+                    menu = arrmenu[7];
+                } else if (emotion == 'disgust') {
+                    menu = arrmenu[8];
+                } else if (emotion == 'fear') {
+                    menu = arrmenu[2];
+                } else if (emotion == 'laugh') {
+                    menu = arrmenu[6];
+                } else if (emotion == 'neutral') {
+                    menu = arrmenu[5];
+                } else if (emotion == 'sad') {
+                    menu = arrmenu[1];
+                } else if (emotion == 'surprise') {
+                    menu = arrmenu[5];
+                } else if (emotion == 'smile') {
+                    menu = arrmenu[3];
+                } else if (emotion == 'talking') {
+                    menu = arrmenu[9];
+                } else {
+                    menu = '';
+                }
+            } else {
+                menu = '';
+            }
+
+            console.log(menu);
         }
-        else if(gender=='female'){
-          if(emotion=='angry'){
-            menu='고기';
-          }
-          else if(emotion=='disgust'){
-            menu='디저트';
-          }
-          else if(emotion=='fear'){
-            menu='한식';
-          }
-          else if(emotion=='laugh'){
-            menu='일식';
-          }
-          else if(emotion=='neutral'){
-            menu='중식';
-          }
-          else if(emotion=='sad'){
-            menu='야식';
-          }
-          else if(emotion=='surprise'){
-            menu='중식';
-          }
-          else if(emotion=='smile'){
-            menu='치킨';
-          }
-          else if(emotion=='talking'){
-            menu='카페';
-          }
-          else{
-            menu='';
-          }
-        }
-        else{
-          menu='';
-        }
-        
-        console.log(menu);
-      
- 
-        //return {gender:gender,emotion:emotion};
-     });
-   }
+    });
+}
 
 //사용자가 보낸 사진 저장
 const config = ({
