@@ -1,14 +1,14 @@
 var express = require('express');
-var client_id = 'v3M4wjolGLkrvNA3GUIW';
-var client_secret = 'fKF6vjkWhE';
+var client_id = 'your cfr client id';//cfr api client id를 입력하세요
+var client_secret = 'your cfr client secret';//cfr api client secret을 입력하세요
 const request = require('request');
 const TARGET_URL = 'https://api.line.me/v2/bot/message/reply'
-const TOKEN = 'w5i8sURqF5bof6DWeB87n+oCeWrYaFf7a5YZzfzN1jeITIlZ3PcOmZRcdGCo/djTuHhNxybfJ69y7Jex+7tipBNRynngfyWX9CK1L3EupuhnX8rubeCmJda7HvsQWXVo8ZDcwl2aLwXsE3kiYF2qEwdB04t89/1O/w1cDnyilFU=' //수정해주세용
-const SECRET = 'b0b4501ebc2813a2b0e586293a35b466' //수정해주세용
+const TOKEN = 'your chatbot token' //line chatbot api token을 입력하세요
+const SECRET = 'your chatbot secret' //line chatbot api secret을 입력하세요
 const fs = require('fs');
 const path = require('path');
 const HTTPS = require('https');
-const domain = "www.osstest237.ml" //수정해주세용
+const domain = "your domain" //도메인을 입력하세요
 const sslport = 23023;
 const line = require('@line/bot-sdk');
 
@@ -23,8 +23,8 @@ var imgDownloaded = false;
 var downloadedImg = ''
 
 //search
-var search_client_id = 'cnS9zzj0OZ3xPgHqtaLJ';
-var search_client_secret = 'oQGaxdr7aq';
+var search_client_id = 'your search client id';//naver search local api client id를 입력하세요
+var search_client_secret = 'your search client secret';//naver search local api client secret 입력하세요
 
 //data parsing
 var data='';
