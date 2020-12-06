@@ -420,8 +420,7 @@ imgtodata = function(dir) {
         var facenum = cfrdata.info.faceCount;
         //인식된 얼굴이 없을 때
         if (facenum == 0) {
-            randomMenu=Math.floor(Math.random()*10);
-            menu = arrmenu[randomMenu];
+            menu=''
         } 
         //얼굴 1개 이상
         else {
