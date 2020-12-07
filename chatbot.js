@@ -19,8 +19,7 @@ app.use(bodyParser.json());
 
 var usingMessage = ''
 var content_id = ''
-var imgDownloaded = false;
-var downloadedImg = ''
+
 
 //search
 var search_client_id = 'your search client id';//naver search local api client id를 입력하세요
@@ -88,8 +87,6 @@ app.post('/hook', function (req, res) {
         content_id = eventObj.message.id;
         const downloadPath = path.join(__dirname, 'sample.jpg');
         downloadContent(content_id, downloadPath);
-        //downloadedImg = content_id;
-        //imgDownloaded = true;
         Checking(eventObj.replyToken);
         res.sendStatus(200);
     } else if (text == 'ㅇ') {
@@ -139,24 +136,6 @@ const quickReplyCfrYes = {
 
 const quickReplyCfrNo = {
     items: [
-    /*
-      {
-        "type": "action",
-        "action": {
-            "type": "message",
-            "label": "weather",
-            "text": "날씨"
-        }
-      },
-      {
-        "type": "action",
-        "action": {
-            "type": "message",
-            "label": "menu",
-            "text": "메뉴"
-        }
-      },
-    */
       {
         "type": "action",
         "action": {

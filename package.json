@@ -1,12 +1,12 @@
 {
   "name": "cfr-chatbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "chatbot to recommend good restaurants using CFR API",
   "main": "chatbot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "whdkgp97@khu.ac.kr",
   "license": "ISC",
   "dependencies": {
     "@line/bot-sdk": "^7.1.0",
@@ -17,6 +17,7 @@
     "fs": "0.0.1-security",
     "html-webpack-plugin": "^4.5.0",
     "line-bot-sdk-nodejs": "^1.0.0",
+    "proj4": "^2.6.3",
     "request": "^2.88.2",
     "webpack": "^5.9.0"
   }
