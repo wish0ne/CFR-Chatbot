@@ -82,4 +82,4 @@ var search_client_secret = 'your search client secret';//naver search local api 
 ## Contact
 장소원  wish@khu.ac.kr<br>
 조아혜  whdkgp97@khu.ac.kr<br>
-이다은  
+이다은  daeun197@khu.ac.kr
